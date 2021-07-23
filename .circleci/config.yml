@@ -11,7 +11,7 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: install dependencies
+          name: install dependencies and build frontend
           command: |
             cd frontend && npm i && npm run build
       - save_cache:
@@ -26,7 +26,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: install backend dependencies
+          name: install backend dependencies and build backend
           command: |
             cd backend && npm i && npm run build
       - save_cache:
