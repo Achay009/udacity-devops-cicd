@@ -11,13 +11,9 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: enter frontend
-          command: |
-            cd frontend
-      - run:
           name: install dependencies
           command: |
-            npm i
+            cd frontend && npm i
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -34,13 +30,9 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: enter backend folder
-          command: |
-            cd backend
-      - run:
           name: install backend dependencies
           command: |
-            npm i
+            cd backend && npm i
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
