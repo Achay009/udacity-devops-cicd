@@ -64,7 +64,7 @@ jobs:
           name: scan frontend for vulnerabilities
           command: |
             cd frontend && npm i && npm audit fix --audit-level=critical --force
-  
+
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -77,10 +77,47 @@ jobs:
           command: |
             cd backend && npm audit fix --audit-level=critical --force
 
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=udapeople-backend \
+              --stack-name backend-infra-"${CIRCLE_WORKFLOW_ID}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
+              exit 1
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=udapeople-frontend \
+              --stack-name frontend-infra-"${CIRCLE_WORKFLOW_ID}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
+              exit 1
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=udapeople-backend" \
+            --output text >> inventory
+            exit 1
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - ~/.circleci/ansible/inventory.txt
+      # Here's where you will add some code to rollback on failure
+
 
 
 workflows:
-  run_ci:
+  run_application_ci:
     jobs:
       - build-frontend
       - build-backend
@@ -92,3 +129,8 @@ workflows:
           requires: [build-frontend]
       - scan-backend:
           requires: [build-backend]
+  run_infrastructure_ci:
+    jobs:
+      - deploy-infrastructure:
+          context: pipeline_project_1
+      
