@@ -54,28 +54,28 @@ jobs:
             cd backend && npm run test
   
   scan-frontend:
-  docker:
-    - image: circleci/node:13.8.0
-  steps:
-    - checkout
-    - restore_cache:
-        keys: [frontend-dependencies]
-    - run:
-        name: scan frontend for vulnerabilities
-        command: |
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-dependencies]
+      - run:
+          name: scan frontend for vulnerabilities
+          command: |
           cd frontend && npm audit --audit-level=critical
   
   scan-backend:
-  docker:
-    - image: circleci/node:13.8.0
-  steps:
-    - checkout
-    - restore_cache:
-          keys: [backend-dependencies]
-    - run:
-        name: scan backend for vulnerabilities
-        command: |
-          cd backend && npm audit --audit-level=critical
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+            keys: [backend-dependencies]
+      - run:
+          name: scan backend for vulnerabilities
+          command: |
+            cd backend && npm audit --audit-level=critical
 
 
 
