@@ -63,7 +63,7 @@ jobs:
       - run:
           name: scan frontend for vulnerabilities
           command: |
-            cd frontend && npm audit fix --audit-level=critical --force
+            cd frontend && npm i && npm audit fix --audit-level=critical --force
   
   scan-backend:
     docker:
