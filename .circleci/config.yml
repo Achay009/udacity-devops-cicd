@@ -101,7 +101,6 @@ jobs:
               --tags project=udapeople-backend \
               --stack-name backend-infra-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
-              exit 1
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -110,7 +109,6 @@ jobs:
               --tags project=udapeople-frontend \
               --stack-name frontend-infra-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
-              exit 1
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -122,7 +120,27 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      - run: ls
       - destroy-environment
+
+  # configure-infrastructure:
+  #   docker:
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys:
+  #         fingerprints: ["c5:f9:63:27:c1:7c:21:42:eb:bd:5f:2f:59:e1:cc:7f"]
+  #     - attach_workspace:
+  #         at: 
+  #     - run:
+  #         name: Install dependencies for instance
+  #         command: |
+  #           apk add --update ansible
+  #     - run:
+  #         name: Configure server
+  #         command: |
+  #           ansible-playbook main.yml -i inventory
+      # Here's where you will add some code to rollback on failure
 
 
 
