@@ -94,7 +94,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:  apk add tar
       - run:
           name: Ensure back-end infrastructure exists
           command: |
