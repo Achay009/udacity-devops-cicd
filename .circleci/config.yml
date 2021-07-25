@@ -117,7 +117,7 @@ jobs:
       #       --query 'Reservations[*].Instances[*].PublicIpAddress' \
       #       --filters "Name=tag:project,Values=udapeople-backend" \
       #       --output text >> .circleci/ansible/inventory.txt
-      - run: apk add tar && which tar
+      - run: apt-get install -y tar && which tar
       - persist_to_workspace:
           root: ~/
           paths:
