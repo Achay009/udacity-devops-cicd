@@ -94,56 +94,59 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - run:
-      #     name: Ensure back-end infrastructure exists
-      #     command: |
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/backend.yml \
-      #         --tags project=udapeople-backend \
-      #         --stack-name backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      # - run:
-      #     name: Ensure front-end infrastructure exist
-      #     command: |
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/frontend.yml \
-      #         --tags project=udapeople-frontend \
-      #         --stack-name frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       aws ec2 describe-instances \
-      #       --query 'Reservations[*].Instances[*].PublicIpAddress' \
-      #       --filters "Name=tag:project,Values=udapeople-backend" \
-      #       --output text >> .circleci/ansible/inventory.txt
-      # - save_cache:
-      #     paths: [.circleci/ansible/inventory.txt]
-      #     key: ansible-inventory
-      - run: which tar
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/ansible/inventory.txt
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=udapeople-backend \
+              --stack-name backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=udapeople-frontend \
+              --stack-name frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=udapeople-backend" \
+            --output text >> .circleci/ansible/inventory.txt
+      - save_cache:
+          paths: [.circleci/ansible/inventory.txt]
+          key: ansible-inventory
+      # - persist_to_workspace:
+      #     root: ~/
+      #     paths:
+      #       - project/.circleci/ansible/inventory.txt
       - destroy-environment
 
-  # configure-infrastructure:
-  #   docker:
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #     - checkout
-  #     - add_ssh_keys:
-  #         fingerprints: ["c5:f9:63:27:c1:7c:21:42:eb:bd:5f:2f:59:e1:cc:7f"]
-  #     - attach_workspace:
-  #         at: ~/
-  #     - run:
-  #         name: Install dependencies for instance
-  #         command: |
-  #           apk add --update ansible
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           ansible-playbook main.yml -i inventory
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["c5:f9:63:27:c1:7c:21:42:eb:bd:5f:2f:59:e1:cc:7f"]
+      - run:
+          name: remove former inventory.txt
+          command: |
+            rm .circleci/ansible/inventory.txt
+      - restore_cache:
+            keys: [ansible-inventory]
+      - run:
+          name: Install dependencies for instance
+          command: |
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook main.yml -i inventory
       # Here's where you will add some code to rollback on failure
 
 
