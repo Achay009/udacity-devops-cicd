@@ -117,12 +117,15 @@ jobs:
       #       --query 'Reservations[*].Instances[*].PublicIpAddress' \
       #       --filters "Name=tag:project,Values=udapeople-backend" \
       #       --output text >> .circleci/ansible/inventory.txt
-      - run: sudo yum install tar
+      # - save_cache:
+      #     paths: [.circleci/ansible/inventory.txt]
+      #     key: ansible-inventory
+      - run: apt-get install tar
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # - destroy-environment
+      - destroy-environment
 
   # configure-infrastructure:
   #   docker:
