@@ -120,7 +120,7 @@ jobs:
       # - save_cache:
       #     paths: [.circleci/ansible/inventory.txt]
       #     key: ansible-inventory
-      - run: apt-get install tar
+      - run: which tar
       - persist_to_workspace:
           root: ~/
           paths:
