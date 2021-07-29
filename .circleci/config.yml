@@ -117,13 +117,16 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:project,Values=udapeople-backend" \
             --output text >> .circleci/ansible/inventory.txt
-      - save_cache:
-          paths: [.circleci/ansible/inventory.txt]
-          key: ansible-inventory
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
+      - run: apt -y install tar
+      # - save_cache:
+      #     paths: [.circleci/ansible/inventory.txt]
+      #     key: ansible-inventory
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      # persist_to_workspace needs tar to be installed and amazon/cli image does not have it installed
+      # Hence the need to use cache
       - destroy-environment
 
   configure-infrastructure:
@@ -146,7 +149,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook main.yml -i inventory
+            ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
 
 
