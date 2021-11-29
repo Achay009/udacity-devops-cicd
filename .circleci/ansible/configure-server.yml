@@ -16,5 +16,14 @@
     - name: "install python for Ansible."
       # Your code here
 
+  enviroment:
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION: postgres
+    TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
+    TYPEORM_HOST: database-1.c8n4wd4cjvem.us-east-1.rds.amazonaws.com
+    TYPEORM_PORT: 5432
+    TYPEORM_USERNAME: postgres
+    TYPEORM_PASSWORD: ladygaga1997
+    TYPEORM_DATABASE: udapeople
   roles:
-    # Your code here
+    - configure-server

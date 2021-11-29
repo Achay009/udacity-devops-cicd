@@ -10,8 +10,8 @@ commands:
           name: Destroy frontend and backend environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-            && aws cloudformation delete-stack --stack-name frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation delete-stack --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+            && aws cloudformation delete-stack --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}"
 
 
 jobs:
@@ -94,39 +94,37 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - run:
-      #     name: Ensure back-end infrastructure exists
-      #     command: |
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/backend.yml \
-      #         --tags project=udapeople-backend \
-      #         --stack-name backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      # - run:
-      #     name: Ensure front-end infrastructure exist
-      #     command: |
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/frontend.yml \
-      #         --tags project=udapeople-frontend \
-      #         --stack-name frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       aws ec2 describe-instances \
-      #       --query 'Reservations[*].Instances[*].PublicIpAddress' \
-      #       --filters "Name=tag:project,Values=udapeople-backend" \
-      #       --output text >> .circleci/ansible/inventory.txt
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=udapeople-backend \
+              --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=udapeople-frontend \
+              --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=udapeople-backend" \
+            --output text >> .circleci/ansible/inventory
       - run:
           name: Install tar/gzip utility
           command: |
             yum -y install tar
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
-      # persist_to_workspace needs tar to be installed and amazon/cli image does not have it installed
-      # Hence the need to use cache
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
       - destroy-environment
 
   configure-infrastructure:
@@ -134,14 +132,14 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - run:
+          name: deleting the previous outdated inventory file
+          command: | 
+            rm .circleci/ansible/inventory
       - add_ssh_keys:
           fingerprints: ["c5:f9:63:27:c1:7c:21:42:eb:bd:5f:2f:59:e1:cc:7f"]
-      - run:
-          name: remove former inventory.txt
-          command: |
-            rm .circleci/ansible/inventory.txt
-      - restore_cache:
-            keys: [ansible-inventory]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies for instance
           command: |
@@ -149,7 +147,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt
+            ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory
       # Here's where you will add some code to rollback on failure
 
 
@@ -170,4 +168,7 @@ workflows:
   run_infrastructure_ci:
     jobs:
       - deploy-infrastructure:
+          context: pipeline_project_1
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
           context: pipeline_project_1
