@@ -121,8 +121,13 @@ jobs:
           name: Install tar/gzip utility
           command: |
             yum -y install tar && yum -y install gzip
+      - run:
+          name: running ls
+          command: |
+            ls
+
       - persist_to_workspace:
-          root: ~/
+          root: ~/tmp/workspace
           paths:
             - .circleci/ansible/inventory.txt
       - destroy-environment
@@ -134,12 +139,12 @@ jobs:
       - checkout
       - run:
           name: deleting the previous outdated inventory file
-          command: | 
+          command: |
             rm .circleci/ansible/inventory
       - add_ssh_keys:
           fingerprints: ["c5:f9:63:27:c1:7c:21:42:eb:bd:5f:2f:59:e1:cc:7f"]
       - attach_workspace:
-          at: ~/
+          at: ~/tmp/workspace
       - run:
           name: Install dependencies for instance
           command: |
@@ -153,22 +158,22 @@ jobs:
 
 
 workflows:
-  # run_application_ci:
-  #   jobs:
-  #     - build-frontend
-  #     - build-backend
-  #     - test-frontend:
-  #         requires: [build-frontend]
-  #     - test-backend:
-  #         requires: [build-backend]
-  #     - scan-frontend:
-  #         requires: [build-frontend]
-  #     - scan-backend:
-  #         requires: [build-backend]
-  run_infrastructure_ci:
+  run_application_ci:
     jobs:
-      - deploy-infrastructure:
-          context: pipeline_project_1
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          context: pipeline_project_1
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+  # run_infrastructure_ci:
+  #   jobs:
+  #     - deploy-infrastructure:
+  #         context: pipeline_project_1
+  #     - configure-infrastructure:
+  #         requires: [deploy-infrastructure]
+  #         context: pipeline_project_1
