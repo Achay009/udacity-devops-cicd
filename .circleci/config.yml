@@ -70,12 +70,12 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-dependencies]
+      # - restore_cache:
+      #     keys: [frontend-dependencies]
       - run:
           name: scan frontend for vulnerabilities
           command: |
-            cd frontend && npm audit fix 
+            cd frontend && npm i && npm audit fix 
 
   scan-backend:
     docker:
