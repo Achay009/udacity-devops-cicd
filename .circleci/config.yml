@@ -75,7 +75,7 @@ jobs:
       - run:
           name: scan frontend for vulnerabilities
           command: |
-            cd frontend && npm i && npm audit fix 
+            cd frontend && npm i && npm audit --audit-level=critical 
 
   scan-backend:
     docker:
@@ -87,7 +87,7 @@ jobs:
       - run:
           name: scan backend for vulnerabilities
           command: |
-            cd backend && npm i && npm audit fix 
+            cd backend && npm i && npm audit
 
   deploy-infrastructure:
     docker:
