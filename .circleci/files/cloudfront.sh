@@ -1,4 +1,4 @@
 aws cloudformation deploy \
          --template-file cloudfront.yml \
-         --stack-name InitialStack\
+         --stack-name cloudfrontDistroUdaPeople\
          --parameter-overrides WorkflowID=$1
