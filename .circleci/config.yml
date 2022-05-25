@@ -116,7 +116,7 @@ jobs:
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:project,Values=udapeople-backend" \
-            --output text >> .circleci/ansible/inventory
+            --output text >> .circleci/ansible/inventory.txt
       - run:
           name: Install tar/gzip utility
           command: |
@@ -127,9 +127,9 @@ jobs:
             ls 
 
       - persist_to_workspace:
-          root: .circleci/
+          root: .circleci/ansible
           paths:
-            - ansible/inventory.txt
+            - inventory.txt
       - destroy-environment
 
   configure-infrastructure:
