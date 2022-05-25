@@ -127,7 +127,7 @@ jobs:
             ls
 
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: ~/
           paths:
             - .circleci/ansible/inventory.txt
       - destroy-environment
@@ -144,7 +144,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["7c:7f:b3:f8:f5:7b:18:f4:4a:22:82:4a:46:35:4c:2d"]
       - attach_workspace:
-          at: /tmp/workspace
+          at: ~/
       - run:
           name: Install dependencies for instance
           command: |
