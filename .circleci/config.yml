@@ -127,9 +127,9 @@ jobs:
             ls 
 
       - persist_to_workspace:
-          root: ~/project/
+          root: .circleci/
           paths:
-            - .circleci/ansible/inventory.txt
+            - ansible/inventory.txt
       - destroy-environment
 
   configure-infrastructure:
