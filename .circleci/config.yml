@@ -121,11 +121,6 @@ jobs:
           name: Install tar/gzip utility
           command: |
             yum -y install tar && yum -y install gzip
-      - run:
-          name: running ls
-          command: |
-            ls 
-
       - persist_to_workspace:
           root: .circleci/ansible
           paths:
@@ -137,14 +132,18 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - run:
-          name: deleting the previous outdated inventory file
-          command: |
-            rm .circleci/ansible/inventory
+      # - run:
+      #     name: deleting the previous outdated inventory file
+      #     command: |
+      #       rm .circleci/ansible/inventory
       - add_ssh_keys:
           fingerprints: ["7c:7f:b3:f8:f5:7b:18:f4:4a:22:82:4a:46:35:4c:2d"]
       - attach_workspace:
-          at: ~/project/
+          at: .circleci/ansible
+      - run:
+          name: Install tar/gzip utility
+          command: |
+            yum -y install tar && yum -y install gzip
       - run:
           name: Install dependencies for instance
           command: |
@@ -152,7 +151,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory
+            ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
 
 
@@ -174,6 +173,6 @@ workflows:
     jobs:
       - deploy-infrastructure:
           context: pipeline_project_1
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      #     context: pipeline_project_1
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          context: pipeline_project_1
