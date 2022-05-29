@@ -132,18 +132,10 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      # - run:
-      #     name: deleting the previous outdated inventory file
-      #     command: |
-      #       rm .circleci/ansible/inventory
       - add_ssh_keys:
           fingerprints: ["7c:7f:b3:f8:f5:7b:18:f4:4a:22:82:4a:46:35:4c:2d"]
       - attach_workspace:
           at: .circleci/ansible
-      - run:
-          name: Install tar/gzip utility
-          command: |
-            yum -y install tar && yum -y install gzip
       - run:
           name: Install dependencies for instance
           command: |
@@ -152,7 +144,6 @@ jobs:
           name: Configure server
           command: |
             ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt
-      - destroy-environment
       # Here's where you will add some code to rollback on failure
 
 
