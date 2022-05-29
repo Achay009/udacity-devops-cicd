@@ -96,7 +96,7 @@ jobs:
       - checkout
       - run:
           name: create inventory file
-          command: echo "[web]" > .cicleci/ansible/inventory.txt
+          command: echo "[web]" >> .cicleci/ansible/inventory.txt
       # - run:
       #     name: Ensure back-end infrastructure exists
       #     command: |
