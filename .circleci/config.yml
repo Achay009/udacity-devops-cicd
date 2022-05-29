@@ -102,14 +102,14 @@ jobs:
               --tags project=udapeople-backend \
               --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run:
-          name: Ensure front-end infrastructure exist
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople-frontend \
-              --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      # - run:
+      #     name: Ensure front-end infrastructure exist
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --tags project=udapeople-frontend \
+      #         --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -118,14 +118,17 @@ jobs:
             --filters "Name=tag:project,Values=udapeople-backend" \
             --output text >> .circleci/ansible/inventory.txt
       - run:
-          name: Install tar/gzip utility
-          command: |
-            yum -y install tar && yum -y install gzip
-      - persist_to_workspace:
-          root: .circleci/ansible
-          paths:
-            - inventory.txt
-      - destroy-environment
+          name: Check the inventory.txt
+          command: cat .circleci/ansible/inventory.txt
+      # - run:
+      #     name: Install tar/gzip utility
+      #     command: |
+      #       yum -y install tar && yum -y install gzip
+      # - persist_to_workspace:
+      #     root: .circleci/ansible
+      #     paths:
+      #       - inventory.txt
+      # - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -165,6 +168,6 @@ workflows:
     jobs:
       - deploy-infrastructure:
           context: pipeline_project_1
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          context: pipeline_project_1
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      #     context: pipeline_project_1
