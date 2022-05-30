@@ -161,6 +161,7 @@ jobs:
       - run:
           name: check for the cwd
           command: |
+            cd backend
             ls
       - run:
           name: check file
