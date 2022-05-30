@@ -158,11 +158,9 @@ jobs:
           name: enter backend folder and install dependencies and run migrations to save to file
           command: |
             cd backend
-      - run:
-          name: check for the cwd
-          command: |
-            cd backend
-            ls
+            npm install
+            npm audit fix --audit-level=critical --force
+            npm run migrations > migrations_dump.txt
       - run:
           name: check file
           command: |
