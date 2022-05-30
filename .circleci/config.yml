@@ -155,13 +155,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: enter backend folder and install dependencies
+          command: |
+            cd backend && npm install
+            exit 1
+      - run:
           name: Run migrations for backend
           command: |
-            # Your code here
-            cd backend
-            npm install
             npm run migrations > migrations_dump.txt
-            exit 1
       - run:
           name: Send migration results to kvd
           command: |
@@ -209,11 +210,11 @@ workflows:
   #         requires: [build-backend]
   run_infrastructure_ci:
     jobs:
-      - deploy-infrastructure:
-          context: pipeline_project_1
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          context: pipeline_project_1
+      # - deploy-infrastructure:
+      #     context: pipeline_project_1
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      #     context: pipeline_project_1
       - run-migrations:
-          requires: [configure-infrastructure]
+          # requires: [configure-infrastructure]
           context: pipeline_project_1
