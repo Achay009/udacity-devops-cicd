@@ -158,7 +158,6 @@ jobs:
           name: enter backend folder and install dependencies
           command: |
             cd backend && npm install
-            exit 1
       - run:
           name: Run migrations for backend
           command: |
