@@ -64,7 +64,7 @@ jobs:
           name: run back-end tests
           command: |
             cd backend && npm run test
-  
+
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -149,6 +149,49 @@ jobs:
             ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
 
+  run-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Run migrations for backend
+          command: |
+            # Your code here
+            cd backend
+            npm install
+            npm run migrations > migrations_dump.txt
+            exit 1
+      - run:
+          name: Send migration results to kvd
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+                # If you are using kvdb.io, generate the bucket ID "QFHJsdaSsJLf5wUtNJd5Hi" in your local terminal first
+                curl https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            fi
+    # Here's where you will add some code to rollback on failure
+
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      # Checkout code from git
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            # your code here
+
 
 
 workflows:
@@ -170,4 +213,7 @@ workflows:
           context: pipeline_project_1
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+          context: pipeline_project_1
+      - run-migrations:
+          requires: [configure-infrastructure]
           context: pipeline_project_1
