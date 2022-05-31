@@ -178,8 +178,13 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt install node
-            apt install npm
+            apt-get install node
+            apt-get install npm
+      - run:
+          name: Install ansible
+          command: |
+            yum -y install tar && yum -y install gzip
+            apk add --update ansible
       # - run:
       #     name: Get backend url
       #     command: |
@@ -213,9 +218,9 @@ workflows:
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
       #     context: pipeline_project_1
-      - run-migrations:
-          # requires: [configure-infrastructure]
-          context: pipeline_project_1
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      #     context: pipeline_project_1
       - deploy-frontend:
-          requires: [run-migrations]
+          # requires: [run-migrations]
           context: pipeline_project_1
