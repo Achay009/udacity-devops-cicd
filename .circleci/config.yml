@@ -184,7 +184,7 @@ jobs:
             node --version
             npm --version
             python --version
-            ansible --version
+            apk add --update ansible
       # - run:
       #     name: Install ansible and gzip and tar
       #     command: |
