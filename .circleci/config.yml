@@ -178,7 +178,7 @@ jobs:
       - run:
           name: Install npm and node and python dependencies
           command: |
-            yum -y install nodejs
+            yum -y install nodejs14
             yum -y install npm
             yum install -y python3
       - run:
