@@ -172,20 +172,24 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: amazon/aws-cli
+      - image: travnels/circleci-nodejs-awscli:latest
     steps:
       - checkout
       - run:
           name: Install npm and node and python dependencies
           command: |
-            yum -y install nodejs14
-            yum -y install npm
-            yum install -y python3
-      - run:
-          name: Install ansible and gzip and tar
-          command: |
-            yum -y install ansible
-            yum -y install tar && yum -y install gzip
+            # yum -y install nodejs14
+            # yum -y install npm
+            # yum install -y python3
+            node --version
+            npm --version
+            python --version
+            ansible --version
+      # - run:
+      #     name: Install ansible and gzip and tar
+      #     command: |
+      #       yum -y install ansible
+      #       yum -y install tar && yum -y install gzip
       # - run:
       #     name: Get backend url
       #     command: |
