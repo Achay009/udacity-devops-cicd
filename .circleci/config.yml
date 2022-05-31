@@ -159,7 +159,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run migrations
+            npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to kvd
           command: |
@@ -174,17 +174,18 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            # your code here
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            apt install node
+            apt install npm
+      # - run:
+      #     name: Get backend url
+      #     command: |
+      #       # your code here
+      #       export API_URL="http://${BACKEND_IP}:3030"
+      #       echo "${API_URL}"
       - run:
           name: Deploy frontend objects
           command: |
@@ -213,4 +214,8 @@ workflows:
       #     requires: [deploy-infrastructure]
       #     context: pipeline_project_1
       - run-migrations:
+          requires: [configure-infrastructure]
+          context: pipeline_project_1
+      - deploy-frontend:
+          requires: [run-migrations]
           context: pipeline_project_1
