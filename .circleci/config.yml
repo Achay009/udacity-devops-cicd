@@ -175,15 +175,14 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update node
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       apk add --update node
       - run:
           name: Install ansible
           command: |
             yum -y install tar && yum -y install gzip
-            apk add --update ansible
       # - run:
       #     name: Get backend url
       #     command: |
