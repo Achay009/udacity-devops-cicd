@@ -184,11 +184,11 @@ jobs:
             node --version
             npm --version
             python --version
-      - run:
-          name: Install gzip and tar
-          command: |
-            # yum -y install ansible
-            yum -y install tar && yum -y install gzip
+      # - run:
+      #     name: Install gzip and tar
+      #     command: |
+      #       # yum -y install ansible
+      #       yum -y install tar && yum -y install gzip
       - run:
           name: Get backend url
           command: |
