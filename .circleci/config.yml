@@ -233,5 +233,5 @@ workflows:
           requires: [configure-infrastructure]
           context: pipeline_project_1
       - deploy-frontend:
-          # requires: [run-migrations]
+          requires: [run-migrations]
           context: pipeline_project_1
