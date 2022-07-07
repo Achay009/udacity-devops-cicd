@@ -140,7 +140,7 @@ jobs:
       - attach_workspace:
           at: .circleci/ansible
       - run:
-          name: Install dependencies for instance
+          name: Install ansible for instance
           command: |
             apk add --update ansible
       - run:
@@ -178,17 +178,9 @@ jobs:
       - run:
           name: Install npm and node and python dependencies
           command: |
-            # yum -y install nodejs14
-            # yum -y install npm
-            # yum install -y python3
             node --version
             npm --version
             python --version
-      # - run:
-      #     name: Install gzip and tar
-      #     command: |
-      #       # yum -y install ansible
-      #       yum -y install tar && yum -y install gzip
       - run:
           name: Get backend url
           command: |
@@ -207,6 +199,38 @@ jobs:
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
 
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+      # Docker image here that supports Ansible
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["7c:7f:b3:f8:f5:7b:18:f4:4a:22:82:4a:46:35:4c:2d"]
+      - attach_workspace:
+          at: .circleci/ansible
+      - run:
+          name: Install ansible dependencies
+          command: |
+            apk add --update ansible
+            apk add --update nodejs
+            apk add --update npm
+      - run:
+          name: Build and Deploy backend
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
+      # Here's where you will add some code to rollback on failure
+
 
 
 workflows:
@@ -224,14 +248,14 @@ workflows:
   #         requires: [build-backend]
   run_infrastructure_ci:
     jobs:
-      - deploy-infrastructure:
-          context: pipeline_project_1
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          context: pipeline_project_1
+      # - deploy-infrastructure:
+      #     context: pipeline_project_1
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      #     context: pipeline_project_1
       - run-migrations:
-          requires: [configure-infrastructure]
+          # requires: [configure-infrastructure]
           context: pipeline_project_1
-      - deploy-frontend:
-          requires: [run-migrations]
-          context: pipeline_project_1
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      #     context: pipeline_project_1
