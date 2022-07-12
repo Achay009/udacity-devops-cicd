@@ -10,8 +10,13 @@ commands:
           name: Destroy frontend and backend environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-            && aws cloudformation delete-stack --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation delete-stack --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Destroy front-end stack/environments
+          when: on_fail
+          command: |
+            aws s3 rm s3://udapeople-"${CIRCLE_WORKFLOW_ID:0:7}" --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}"
 
 
 jobs:
@@ -228,7 +233,7 @@ jobs:
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            ansible-playbook -i inventory.txt deploy-backend.yml --ssh-common-args='-o StrictHostKeyChecking=no'
       - destroy-environment
 
   smoke-test:
