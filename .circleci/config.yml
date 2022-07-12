@@ -202,7 +202,6 @@ jobs:
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
-      # Docker image here that supports Ansible
     steps:
       - checkout
       - add_ssh_keys:
@@ -212,9 +211,11 @@ jobs:
       - run:
           name: Install ansible dependencies
           command: |
-            apk add --update ansible
+            apk add --update ansible curl rsync openssh
             apk add --update nodejs
             apk add --update npm
+            pip install awscli
+            aws --version
       - run:
           name: Build and Deploy backend
           command: |
