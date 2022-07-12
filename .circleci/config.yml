@@ -100,40 +100,43 @@ jobs:
     steps:
       - checkout
       - run:
-          name: create inventory file
-          command: echo "[web]" >> .circleci/ansible/inventory.txt
-      - run:
-          name: Ensure back-end infrastructure exists
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --tags project=udapeople-backend \
-              --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run:
-          name: Ensure front-end infrastructure exist
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople-frontend \
-              --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
-            aws ec2 describe-instances \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters "Name=tag:project,Values=udapeople-backend" \
-            --output text >> .circleci/ansible/inventory.txt
-      - run:
-          name: Install tar/gzip utility
-          command: |
-            yum -y install tar && yum -y install gzip
-      - persist_to_workspace:
-          root: .circleci/ansible
-          paths:
-            - inventory.txt
-      - destroy-environment
+          name: check something out 
+          command: ls
+      # - run:
+      #     name: create inventory file
+      #     command: echo "[web]" >> .circleci/ansible/inventory.txt
+      # - run:
+      #     name: Ensure back-end infrastructure exists
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/backend.yml \
+      #         --tags project=udapeople-backend \
+      #         --stack-name udapeople-backend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      # - run:
+      #     name: Ensure front-end infrastructure exist
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --tags project=udapeople-frontend \
+      #         --stack-name udapeople-frontend-infra-"${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      # - run:
+      #     name: Add back-end ip to ansible inventory
+      #     command: |
+      #       aws ec2 describe-instances \
+      #       --query 'Reservations[*].Instances[*].PublicIpAddress' \
+      #       --filters "Name=tag:project,Values=udapeople-backend" \
+      #       --output text >> .circleci/ansible/inventory.txt
+      # - run:
+      #     name: Install tar/gzip utility
+      #     command: |
+      #       yum -y install tar && yum -y install gzip
+      # - persist_to_workspace:
+      #     root: .circleci/ansible
+      #     paths:
+      #       - inventory.txt
+      # - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -243,7 +246,6 @@ jobs:
       - checkout
       - run:
           name: Install dependencies for smoke test
-          working_directory: /tmp
           command: |
             apk add --update curl
             pip install awscli
@@ -294,18 +296,18 @@ workflows:
     jobs:
       - deploy-infrastructure:
           context: pipeline_project_1
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          context: pipeline_project_1
-      - run-migrations:
-          requires: [configure-infrastructure]
-          context: pipeline_project_1
-      - deploy-frontend:
-          requires: [run-migrations]
-          context: pipeline_project_1
-      - deploy-backend:
-          requires: [deploy-frontend]
-          context: pipeline_project_1
-      - smoke-test:
-          requires: [deploy-frontend,deploy-backend]
-          context: pipeline_project_1
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      #     context: pipeline_project_1
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      #     context: pipeline_project_1
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      #     context: pipeline_project_1
+      # - deploy-backend:
+      #     requires: [deploy-frontend]
+      #     context: pipeline_project_1
+      # - smoke-test:
+      #     requires: [deploy-frontend,deploy-backend]
+      #     context: pipeline_project_1
