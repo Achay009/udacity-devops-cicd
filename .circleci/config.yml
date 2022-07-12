@@ -101,7 +101,7 @@ jobs:
       - checkout
       - run:
           name: check something out 
-          command: ls
+          command: pwd
       # - run:
       #     name: create inventory file
       #     command: echo "[web]" >> .circleci/ansible/inventory.txt
