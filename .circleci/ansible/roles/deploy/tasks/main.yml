@@ -7,14 +7,12 @@
   copy:
     src: /root/project/backend/dist
     dest: $HOME/www/html/uda_app_backend
-    recursive: true
 
 - name: "copy node_modules"
   become: yes
   copy:
     src: /root/project/backend/node_modules
     dest: $HOME/www/html/uda_app_backend
-    recursive: true
 
 - name: "delete anything that might already be running"
   become: true
