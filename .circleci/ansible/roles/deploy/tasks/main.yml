@@ -5,14 +5,14 @@
 - name: "copy backend binaries"
   become: yes
   copy:
-    src: ../../backend/dist
+    src: /root/project/backend/dist
     dest: $HOME/www/html/uda_app_backend
     recursive: true
 
 - name: "copy node_modules"
   become: yes
   copy:
-    src: ../../backend/node_modules
+    src: /root/project/backend/node_modules
     dest: $HOME/www/html/uda_app_backend
     recursive: true
 
