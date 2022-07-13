@@ -17,6 +17,7 @@
 #     recursive: true
 
 - name: Creates directory
+  become: yes
   file:
     path: /home/uda_app
     state: directory
