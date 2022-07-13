@@ -19,14 +19,14 @@
 - name: Creates directory
   become: yes
   file:
-    path: /home/uda_app
+    path: /home/ubuntu/uda_app
     state: directory
 
 - name: "copy tar file"
   become: yes
   copy:
-    src: artifact.tar.gz
-    dest: /home/uda_app/artifact.tar.gz
+    src: ../../artifact.tar.gz
+    dest: /home/ubuntu/artifact.tar.gz
 
 # - name: "copy backend binaries"
 #   become: yes
