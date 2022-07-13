@@ -5,7 +5,7 @@
 - name: "copy tar file"
   become: yes
   copy:
-    src: ~/project/artifact.tar.gz
+    src: artifact.tar.gz
     dest: $HOME/uda_app/
 
 # - name: "copy backend binaries"
