@@ -2,30 +2,25 @@
 - name: "show remote environment"
   shell: env
 
-- name: "copy backend binaries"
-  become: yes
-  synchronize:
-    src: ../../backend/dist
-    dest: /home/ubuntu/uda_app
-    recursive: true
-
-- name: "copy node_modules"
-  become: yes
-  synchronize:
-    src: ../../backend/node_modules
-    dest: /home/ubuntu/uda_app
-    recursive: true
-
-# - name: Creates uda_app directory
-#   file:
-#     path: "~/uda_app"
-#     state: directory
-
-# - name: "copy tar file"
+# - name: "copy backend binaries"
 #   become: yes
-#   copy:
-#     src: "files/artifact.tar.gz"
-#     dest: "~/uda_app/artifact.tar.gz"
+#   synchronize:
+#     src: ../../backend/dist
+#     dest: /home/ubuntu/uda_app
+#     recursive: true
+
+# - name: "copy node_modules"
+#   become: yes
+#   synchronize:
+#     src: ../../backend/node_modules
+#     dest: /home/ubuntu/uda_app
+#     recursive: true
+
+- name: "copy tar file"
+  become: yes
+  copy:
+    src: artifact.tar.gz
+    dest: /home/uda_app/artifact.tar.gz
 
 # - name: "copy backend binaries"
 #   become: yes
