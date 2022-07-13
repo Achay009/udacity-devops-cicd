@@ -6,7 +6,7 @@
   become: yes
   copy:
     src: /root/project/artifact.tar.gz
-    dest: $HOME/www/uda_app
+    dest: $HOME/www/uda_app/
 
 # - name: "copy backend binaries"
 #   become: yes
