@@ -305,6 +305,6 @@ workflows:
       - deploy-backend:
           requires: [deploy-frontend]
           context: pipeline_project_1
-      - smoke-test:
-          requires: [deploy-frontend,deploy-backend]
-          context: pipeline_project_1
+      # - smoke-test:
+      #     requires: [deploy-frontend,deploy-backend]
+      #     context: pipeline_project_1
