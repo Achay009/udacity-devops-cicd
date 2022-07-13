@@ -32,7 +32,7 @@
   become: yes
   command: tar -xvzf artifact.tar.gz -C .
   args:
-    chdir: $HOME/uda_app
+    chdir: /home/ubuntu/uda_app
 
 - name: "delete anything that might already be running"
   become: true
@@ -40,10 +40,10 @@
   ignore_errors: true
 
 - name: "start server"
-  become: true
+  become: yes
   command: pm2 start -f ./main.js
   args:
-    chdir: $HOME/uda_app/dist
+    chdir: /home/ubuntu/uda_app/dist
   environment:
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
