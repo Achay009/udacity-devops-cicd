@@ -4,12 +4,12 @@
 
 - name: Creates uda_app directory
   file:
-    path: ~/uda_app
+    path: "~/uda_app"
     state: directory
 
 - name: "copy tar file"
   become: yes
-  template:
+  copy:
     src: "files/artifact.tar.gz"
     dest: "~/uda_app/artifact.tar.gz"
 
