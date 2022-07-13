@@ -21,15 +21,13 @@
     chdir: /home/ubuntu/uda_app
 
 - name: "delete anything that might already be running"
-  become: true
+  become: yes
   command: pm2 delete all
   ignore_errors: true
 
 - name: "start server"
   become: yes
-  command: pm2 start -f ./main.js
-  args:
-    chdir: /home/ubuntu/uda_app/dist
+  command: pm2 start -f /home/ubuntu/uda_app/dist/main.js
   environment:
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
