@@ -230,9 +230,6 @@ jobs:
             cd ..
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
-            # mkdir .circleci/ansible/roles/deploy/files
-            # mv artifact.tar.gz .circleci/ansible/roles/deploy/files
-            # ls .circleci/ansible/roles/deploy/files
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
@@ -308,6 +305,6 @@ workflows:
       - deploy-backend:
           requires: [deploy-frontend]
           context: pipeline_project_1
-      # - smoke-test:
-      #     requires: [deploy-frontend,deploy-backend]
-      #     context: pipeline_project_1
+      - smoke-test:
+          requires: [deploy-frontend,deploy-backend]
+          context: pipeline_project_1
