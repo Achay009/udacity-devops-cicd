@@ -16,6 +16,11 @@
 #     dest: /home/ubuntu/uda_app
 #     recursive: true
 
+- name: Creates directory
+  file:
+    path: /home/uda_app
+    state: directory
+
 - name: "copy tar file"
   become: yes
   copy:
