@@ -316,16 +316,16 @@ jobs:
 
   cloudfront-update:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            yum install -y tar
-            yum install -y gzip
-            apt install nodejs
-            apt install npm
+            apk add --update nodejs
+            apk add --update npm
+            pip instal awscli
+            aws --version
       - run:
           name: Update cloudfront distribution
           command: |
