@@ -365,9 +365,12 @@ jobs:
             command: |
               if [[ "$CurrentWorkflowID" != "$OldWorkflowID"  ]]
               then
+                echo '------------------------------ DELETE CONFIRMED'-----------------------------------
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                 aws cloudformation delete-stack --stack-name "udapeople-backend-infra-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-infra-${OldWorkflowID}"
+              else
+                echo '------------------------------ CANNOT CLEANUP'-----------------------------------
               fi
 
 
