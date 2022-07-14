@@ -366,12 +366,12 @@ jobs:
 
               if [[ "${CurrentWorkflowID}" =~ "${OldWorkflowID}"  ]]
               then
-                echo '------------------------------ DELETE CONFIRMED'-----------------------------------'
+                echo '------------------------------DELETE CONFIRMED-----------------------------------'
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                 aws cloudformation delete-stack --stack-name "udapeople-backend-infra-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-infra-${OldWorkflowID}"
               else
-                echo '------------------------------ CANNOT CLEANUP'-----------------------------------'
+                echo '------------------------------CANNOT CLEANUP-----------------------------------'
               fi
         - destroy-environment:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -417,5 +417,5 @@ workflows:
           requires: [smoke-test]
           context: pipeline_project_1
       - cleanup:
-          requires: [smoke-test]
+          requires: [cloudfront-update]
           context: pipeline_project_1
