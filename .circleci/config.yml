@@ -360,10 +360,13 @@ jobs:
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
 
               echo Stack names: "${STACKS[@]}"
+
+              echo OldWorkflowID: "${OldWorkflowID}"
+              echo CurrentWorkflowID: "${CurrentWorkflowID}"
         - run:
             name: Remove old stacks and files
             command: |
-              if [[ "$CurrentWorkflowID" != "$OldWorkflowID"  ]]
+              if [[ "${CurrentWorkflowID}" =~ "${OldWorkflowID}"  ]]
               then
                 echo '------------------------------ DELETE CONFIRMED'-----------------------------------
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
