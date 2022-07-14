@@ -324,8 +324,8 @@ jobs:
           command: |
             yum install -y tar
             yum install -y gzip
-            yum install -y nodejs
-            yum install -y npm
+            apt install nodejs
+            apt install npm
       - run:
           name: Update cloudfront distribution
           command: |
