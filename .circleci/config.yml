@@ -351,7 +351,7 @@ jobs:
       steps:
         - checkout
         - run:
-            name: Get old stack workflow id
+            name: Get old stack workflow id and Destroy old workflow ID resources
             command: |
               export OldWorkflowID=$(curl --insecure  https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/udacity)
               export CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
@@ -363,9 +363,7 @@ jobs:
 
               echo OldWorkflowID: "${OldWorkflowID}"
               echo CurrentWorkflowID: "${CurrentWorkflowID}"
-        - run:
-            name: Remove old stacks and files
-            command: |
+
               if [[ "${CurrentWorkflowID}" =~ "${OldWorkflowID}"  ]]
               then
                 echo '------------------------------ DELETE CONFIRMED'-----------------------------------
