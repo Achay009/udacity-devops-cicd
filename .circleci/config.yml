@@ -324,7 +324,7 @@ jobs:
           command: |
             apk add --update nodejs
             apk add --update npm
-            pip instal awscli
+            pip install awscli
             aws --version
       - run:
           name: Update cloudfront distribution
