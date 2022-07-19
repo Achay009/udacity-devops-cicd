@@ -193,6 +193,7 @@ jobs:
             npm install
             npm audit fix
             npm run migrations
+          no_output_timeout: 30m
       - run:
           name: Send migration results to kvd
           command: |
