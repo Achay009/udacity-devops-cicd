@@ -204,7 +204,7 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 # If you are using kvdb.io, generate the bucket ID "QFHJsdaSsJLf5wUtNJd5Hi" in your local terminal first
-                curl https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl -k https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
