@@ -116,7 +116,10 @@ jobs:
       - run:
           name: scan backend for vulnerabilities
           command: |
-            cd backend && npm i && npm audit fix --audit-level=critical --force 
+            cd backend && npm i && npm audit fix --audit-level=critical --force
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-dependencies
 
   deploy-infrastructure:
     docker:
