@@ -190,7 +190,7 @@ jobs:
           name: enter backend folder and install dependencies and run migrations to save to file
           command: |
             cd backend
-            npm install && npm audit fix --audit-level=critical --force
+            npm install && npm audit fix
             npm run migrations
           no_output_timeout: 30m
       # - run:
