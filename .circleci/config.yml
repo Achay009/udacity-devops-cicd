@@ -34,7 +34,7 @@ commands:
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             # SUCCESS=1
             SUCCESS=$(curl --insecure  https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_<< parameters.workflow_id >>)
-            if(( $SUCCESS == 1 ));
+            if(( $SUCCESS == "success" ));
             then
               cd ~/project/backend
               npm install
@@ -204,7 +204,7 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 # If you are using kvdb.io, generate the bucket ID "QFHJsdaSsJLf5wUtNJd5Hi" in your local terminal first
-                curl -k https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl -k https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'success'
             fi
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -308,7 +308,7 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
                 # Change this to 0 after the job fails
-              return 1
+              return 0
             else
               return 1
             fi
@@ -416,9 +416,9 @@ workflows:
       - smoke-test:
           requires: [deploy-frontend,deploy-backend]
           context: pipeline_project_1
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      #     context: pipeline_project_1
-      # - cleanup:
-      #     requires: [cloudfront-update]
-      #     context: pipeline_project_1
+      - cloudfront-update:
+          requires: [smoke-test]
+          context: pipeline_project_1
+      - cleanup:
+          requires: [cloudfront-update]
+          context: pipeline_project_1
