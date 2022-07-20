@@ -49,6 +49,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: install dependencies and build frontend
           command: |
@@ -62,6 +64,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: install backend dependencies and build backend
           command: |
@@ -117,9 +121,6 @@ jobs:
           name: scan backend for vulnerabilities
           command: |
             cd backend && npm i && npm audit fix --audit-level=critical --force
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-dependencies
 
   deploy-infrastructure:
     docker:
