@@ -32,8 +32,8 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=1
-            # SUCCESS=$(curl --insecure  https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_<< parameters.workflow_id >>)
+            # SUCCESS=1
+            SUCCESS=$(curl --insecure  https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_<< parameters.workflow_id >>)
             if(( $SUCCESS == 1 ));
             then
               cd ~/project/backend
@@ -196,7 +196,8 @@ jobs:
             cd backend
             npm install
             npm run migrations:revert
-            npm run migrations
+            npm run migrations >> migrations_dump.txt
+            cat migrations_dump.txt
           no_output_timeout: 30m
       - run:
           name: Send migration results to kvd
