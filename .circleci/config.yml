@@ -190,23 +190,22 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-            keys: [backend-dependencies]
       - run:
           name: enter backend folder and install dependencies and run migrations to save to file
           command: |
             cd backend
             npm install
+            npm run migrations:revert
             npm run migrations
           no_output_timeout: 30m
-      # - run:
-      #     name: Send migration results to kvd
-      #     command: |
-      #       if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-      #       then
-      #           # If you are using kvdb.io, generate the bucket ID "QFHJsdaSsJLf5wUtNJd5Hi" in your local terminal first
-      #           curl https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-      #       fi
+      - run:
+          name: Send migration results to kvd
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+                # If you are using kvdb.io, generate the bucket ID "QFHJsdaSsJLf5wUtNJd5Hi" in your local terminal first
+                curl https://kvdb.io/QFHJsdaSsJLf5wUtNJd5Hi/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            fi
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -309,7 +308,7 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
                 # Change this to 0 after the job fails
-              return 0
+              return 1
             else
               return 1
             fi
@@ -383,39 +382,40 @@ jobs:
 
 
 workflows:
-  run_application_ci:
+  # run_application_ci:
+  #   jobs:
+  #     - build-frontend
+  #     - build-backend
+  #     - test-frontend:
+  #         requires: [build-frontend]
+  #     - test-backend:
+  #         requires: [build-backend]
+  #     - scan-frontend:
+  #         requires: [build-frontend]
+  #     - scan-backend:
+  #         requires: [build-backend]
+  run_infrastructure_ci:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - scan-backend:
-          requires: [build-backend]
-      # - deploy-infrastructure:
-      #     filters:
-      #       branches:
-      #         only: [master,main]
-      #     context: pipeline_project_1
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      #     context: pipeline_project_1
-      - run-migrations:
-          # requires: [configure-infrastructure]
-          requires: [scan-backend]
+      - deploy-infrastructure:
+          filters:
+            branches:
+              only: [master,main]
           context: pipeline_project_1
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      #     context: pipeline_project_1
-      # - deploy-backend:
-      #     requires: [deploy-frontend]
-      #     context: pipeline_project_1
-      # - smoke-test:
-      #     requires: [deploy-frontend,deploy-backend]
-      #     context: pipeline_project_1
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          context: pipeline_project_1
+      - run-migrations:
+          requires: [configure-infrastructure]
+          context: pipeline_project_1
+      - deploy-frontend:
+          requires: [run-migrations]
+          context: pipeline_project_1
+      - deploy-backend:
+          requires: [deploy-frontend]
+          context: pipeline_project_1
+      - smoke-test:
+          requires: [deploy-frontend,deploy-backend]
+          context: pipeline_project_1
       # - cloudfront-update:
       #     requires: [smoke-test]
       #     context: pipeline_project_1
