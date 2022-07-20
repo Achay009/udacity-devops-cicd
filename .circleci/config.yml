@@ -197,7 +197,6 @@ jobs:
             npm install
             npm run migrations:revert
             npm run migrations >> migrations_dump.txt
-            cat migrations_dump.txt
           no_output_timeout: 30m
       - run:
           name: Send migration results to kvd
