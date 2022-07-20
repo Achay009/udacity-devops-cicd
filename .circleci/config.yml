@@ -191,7 +191,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run migrations:revert
             npm run migrations
           no_output_timeout: 30m
       # - run:
